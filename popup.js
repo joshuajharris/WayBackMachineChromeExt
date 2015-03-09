@@ -1,3 +1,8 @@
+/*
+*
+* gotCurrentTabUrl() from google official chrome extension tutorial
+*
+*/
 function getCurrentTabUrl(callback) {
   var queryInfo = {
     active: true,
@@ -16,8 +21,14 @@ function getCurrentTabUrl(callback) {
 
 }
 
-function getWayBackRes(tabUrl, callback) {
-  var searchUrl = 'http://archive.org/wayback/available?url=' + encodeURIComponent(tabUrl);
+/*
+*
+* makes an xmlhttprequest to wayback archive passing the site current
+* tab url and a date picked by the user
+*
+*/
+function getWayBackRes(url, timestamp, callback) {
+  var searchUrl = 'http://archive.org/wayback/available?url=' + encodeURIComponent(url) + '&timestamp=' + encodeURIComponent(timestamp);
   //can add a timestamp by appending '&timestamp=:timestamp' to search url
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open('GET', searchUrl, false);
@@ -25,16 +36,29 @@ function getWayBackRes(tabUrl, callback) {
   callback(xmlHttp.responseText);
   
 }
-
+/*
+*
+* Updates the status div element on popup.html with
+* statusText
+*
+*/
 function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  getCurrentTabUrl(function(url) {
-    renderStatus('Performing WayBack Archive Search' + url);
-    getWayBackRes(url, function(data) {
-      renderStatus(data)
+  var tabUrl;
+  getCurrentTabUrl(function(url){
+    tabUrl = url;
+    renderStatus(url);
+  });
+
+  document.getElementById('datePicker').addEventListener('change', function(){
+    var time = document.getElementById('datePicker').value;
+    var time = time.toString().replace(/-/g,'');
+    getWayBackRes(tabUrl, time, function(data){
+      renderStatus(data);
     });
   });
 });
+
