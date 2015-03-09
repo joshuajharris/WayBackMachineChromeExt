@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+
+  "name": "Chrome WayBack Extension",
+  "description": "This extension finds WayBack screenshots of the website at the current tab if any exist",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "http://archive.org/wayback/available"
+  ]
+}
